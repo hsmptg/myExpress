@@ -1,9 +1,14 @@
 var express = require('express');
 var login = express.Router();
 
-/* GET home page. */
-login.get('/', function(req, res, next) {
+login.get('/', function(req, res, next){
   res.render('login', { title: 'myExpress' });
 });
+
+login.post('/',
+//    passport.authenticate('local', { failureRedirect: '/login' }),
+    function(req, res) {
+      res.redirect('/');
+    });
 
 module.exports = login;
