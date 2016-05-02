@@ -1,8 +1,6 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
-//var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 // https://github.com/passport/express-4.x-local-example
@@ -47,6 +45,7 @@ passport.deserializeUser(function(id, cb) {
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var butled = require('./routes/butled');
 
 var app = express();
 
@@ -54,8 +53,10 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// http://www.chami.com/html-kit/services/favicon/
+var favicon = require('serve-favicon');
+app.use(favicon(path.join(__dirname, 'public/images', 'favicon.ico')));
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -69,14 +70,20 @@ app.use(require('cookie-parser')());
 //app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
-// Initialize Passport and restore authentication state, if any, from the
-// session.
+// Initialize Passport and restore authentication state, if any, from the session.
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', routes);
 app.use('/users', users);
 app.use('/login', login);
+app.use('/butled', butled);
+
+app.get('/logout',
+    function(req, res){
+        req.logout();
+        res.redirect('/');
+    });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -108,6 +115,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;
